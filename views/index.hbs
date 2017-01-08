@@ -1,0 +1,78 @@
+<style>
+  #map {
+    height: 92%;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+</style>
+
+<div id="map"></div>
+
+<script>
+    {{#if user}}
+    Materialize.toast("Click a pushpin to save or delete a location." , 4000);
+    {{else}}
+        Materialize.toast("Click a pushpin for station information. Login to save or delete locations." , 5000);
+    {{/if}}
+
+	var save_html_data_part_one = "<form method=POST action=><input type=hidden name=the_loc value='"
+	var save_html_data_part_two = "'><input type=hidden name=station_id value="
+	var save_html_data_part_three = "><input type=submit value=Save></form>";
+
+	var del_html_data_part_one = "<form method=POST action=/del><input type=hidden name=station_id value="
+	var del_html_data_part_two = "><input type=submit value=Delete></form>";
+
+
+	function initMap() {
+    	var map = new google.maps.Map(document.getElementById('map'), {
+        	center: {lat: 40.730610, lng: -73.935242},
+        	zoom: 12
+        });
+
+    	/* set bike paths to appear */
+        var bikeLayer = new google.maps.BicyclingLayer();
+        bikeLayer.setMap(map);
+
+        {{#each json_obj.data.stations}}
+        	{{#if saved}}
+                var infowindow = new google.maps.InfoWindow({
+                });
+
+                var marker = new google.maps.Marker({
+                    position: {lat:{{lat}}, lng:{{lon}} },
+                    map: map,
+                    icon: "/images/cb_icon.png"
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.setContent("{{name}}" + "<br>Capacity: " + {{capacity}} + "<br>" + del_html_data_part_one + {{station_id}} + del_html_data_part_two);
+                    infowindow.setPosition({lat:{{lat}}, lng: {{lon}} });
+                    infowindow.open(map, this);
+                });
+
+            {{else}}
+        		var infowindow = new google.maps.InfoWindow({
+    			});
+
+ 				var marker = new google.maps.Marker({
+    				position: {lat:{{lat}}, lng:{{lon}} },
+    	 			map: map
+    			});
+
+    			marker.addListener('click', function() {
+        			infowindow.setContent("{{name}}" + "<br>Capacity: " + {{capacity}} + "<br>" + save_html_data_part_one + "{{name}}" + save_html_data_part_two + {{station_id}} + save_html_data_part_three);
+        			infowindow.setPosition({lat:{{lat}}, lng: {{lon}} });
+        			infowindow.open(map, this);
+        		});
+    
+            {{/if}}
+
+		{{/each}}
+    }
+
+</script>
+<script src= {{the_src}} async defer></script>

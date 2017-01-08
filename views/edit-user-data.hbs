@@ -1,0 +1,24 @@
+<h2 class="blue-grey-text text-darken-2">Edit User Data</h2>
+
+{{#if user.borough}}
+
+	<p>You have your borough listed as {{user.borough}}.</p>
+	<form method="POST" action="">
+		<input type="submit" value="Delete Your Borough Information" name="delete">
+	</form>
+
+	{{else}}
+
+	<h4>Type in your borough, or commuter. </h4>
+	<h6>Responses other than Manhattan, Brooklyn, Bronx, Queens, Staten Island, or Commuter will not be accepted.</h6>
+	<form method="POST" action="">
+	    <input name="borough" type="text">
+	    <input type="submit" value="Submit">
+	</form>
+
+
+{{/if}}
+
+<script>
+	document.getElementById("account").className = "active"; /* make navbar link active */
+</script>
